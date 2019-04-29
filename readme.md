@@ -3,6 +3,18 @@
 
 I was procrastinating and avoiging physics homework.
 
+# System dependencies
+
+Assuming a linux system which already has `python3`:
+
+```bash
+sudo pacman -Syu nmap || sudo apt-get install -y nmap || sudo yum install -y nmap
+sudo pip3 install ifaddr
+```
+
+`nmap` is used to scan the network and `ifaddr` is a python library used to easily get your local network CIDR mask,
+which identifies how large your network is and what numbers fall inside it.
+
 # Usage
 
 ## Passive observing people connected to LAN
