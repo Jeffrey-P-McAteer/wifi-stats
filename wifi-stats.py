@@ -7,6 +7,10 @@ import xml.etree.ElementTree as ET
 # sudo pip3 install ifaddr
 import ifaddr
 
+VENDOR_BLACKLIST = [
+  "cisco"
+]
+
 pickle_file = "./wifi-stats-memory.bin"
 
 if __name__ == '__main__':
@@ -66,7 +70,7 @@ if __name__ == '__main__':
     #"nmap -sn 10.5.0.0/24"
     
     try:
-      nmap_data = subprocess.check_output(["nmap", "-oX", "-", "-sn", cidr_to_scan])
+      nmap_data = subprocess.check_output(["sudo", "nmap", "-oX", "-", "-sn", cidr_to_scan])
       nmap_data = nmap_data.decode("utf-8")
       
       root = ET.fromstring(nmap_data)
@@ -81,11 +85,19 @@ if __name__ == '__main__':
         for addr in neighbor.findall('address'):
           if addr.attrib['addrtype'].lower() == "mac":
             their_mac = addr.attrib['addr'].lower()
+            their_vendor = addr.attrib['vendor'].lower() if 'vendor' in addr.attrib else "unknown"
+            
+            for bl in VENDOR_BLACKLIST:
+              if not their_vendor or bl in their_vendor:
+                their_vendor = None
+            if not their_vendor:
+              continue
+            
             if their_mac in mac_to_name_map:
               print("We see mac {} which belongs to {}".format(their_mac, mac_to_name_map[their_mac] ))
               total_known += 1
             else:
-              print("Unidentified mac {} vendor = {}".format(their_mac, addr.attrib['vendor'] if 'vendor' in addr.attrib else "unknown" ))
+              print("Unidentified mac {} vendor = {}".format(their_mac, their_vendor))
               
             total_people += 1
       

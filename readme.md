@@ -23,6 +23,8 @@ which identifies how large your network is and what numbers fall inside it.
 sudo ./wifi-stats.py
 ```
 
+You may be interested in using a technique like the one outlined here to reduce the number of times you need to type your password to send privledged packes: https://askubuntu.com/a/159009
+
 Output:
 
 ```
